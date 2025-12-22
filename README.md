@@ -149,7 +149,3 @@ php artisan migrate:fresh --env=testing
 ./vendor/bin/phpunit
 ```
 ※.env.testingにもStripeのAPIキーを設定してください。  
-
-## 生徒様へ
-普段よりお世話になっております。  
-こちらの模範解答に関するご質問、またこちらに不備を見つけた、などの際は気兼ねなく申し付けください。
