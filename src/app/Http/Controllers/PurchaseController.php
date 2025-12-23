@@ -10,6 +10,7 @@ use App\Models\Item;
 use App\Models\User;
 use App\Models\SoldItem;
 use App\Models\Profile;
+use App\Models\Transaction;
 use Stripe\StripeClient;
 
 class PurchaseController extends Controller
@@ -83,6 +84,15 @@ class PurchaseController extends Controller
             'sending_postcode' => $request->sending_postcode,
             'sending_address' => $request->sending_address,
             'sending_building' => $request->sending_building ?? null,
+        ]);
+
+        $item = Item::find($item_id);
+        
+        // 取引レコードを作成
+        Transaction::create([
+            'item_id' => $item_id,
+            'buyer_id' => $request->user_id,
+            'seller_id' => $item->user_id,
         ]);
 
         return redirect('/')->with('flashSuccess', '決済が完了しました！');

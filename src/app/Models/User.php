@@ -60,5 +60,40 @@ class User extends Authenticatable implements MustVerifyEmail
     public function items()
     {
         return $this->hasMany('App\Models\Item');
-    }  
+    }
+
+    public function buyerTransactions()
+    {
+        return $this->hasMany('App\Models\Transaction', 'buyer_id');
+    }
+
+    public function sellerTransactions()
+    {
+        return $this->hasMany('App\Models\Transaction', 'seller_id');
+    }
+
+    public function transactionMessages()
+    {
+        return $this->hasMany('App\Models\TransactionMessage');
+    }
+
+    public function ratingsGiven()
+    {
+        return $this->hasMany('App\Models\Rating', 'rater_id');
+    }
+
+    public function ratingsReceived()
+    {
+        return $this->hasMany('App\Models\Rating', 'rated_user_id');
+    }
+
+    public function getAverageRating()
+    {
+        $ratings = $this->ratingsReceived()->get();
+        if ($ratings->count() === 0) {
+            return null;
+        }
+        $average = $ratings->avg('rating');
+        return round($average);
+    }
 }

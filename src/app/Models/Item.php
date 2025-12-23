@@ -80,4 +80,14 @@ class Item extends Model
         return $query->where('name', 'like', '%'.$item_name.'%');
     }
 
+    public function transaction()
+    {
+        return $this->hasOne('App\Models\Transaction');
+    }
+
+    public function ratings()
+    {
+        return $this->hasMany('App\Models\Rating');
+    }
+
 }

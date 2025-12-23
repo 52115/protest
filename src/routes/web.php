@@ -5,6 +5,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Requests\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -40,6 +41,13 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::get('/mypage', [UserController::class, 'mypage']);
     Route::get('/mypage/profile', [UserController::class, 'profile']);
     Route::post('/mypage/profile', [UserController::class, 'updateProfile']);
+    Route::get('/transaction/{transaction_id}', [TransactionController::class, 'show']);
+    Route::post('/transaction/{transaction_id}/message', [TransactionController::class, 'store']);
+    Route::get('/transaction/{transaction_id}/message/{message_id}/edit', [TransactionController::class, 'edit']);
+    Route::post('/transaction/{transaction_id}/message/{message_id}/update', [TransactionController::class, 'update']);
+    Route::delete('/transaction/{transaction_id}/message/{message_id}', [TransactionController::class, 'destroy']);
+    Route::post('/transaction/{transaction_id}/complete', [TransactionController::class, 'complete']);
+    Route::post('/transaction/{transaction_id}/rating', [TransactionController::class, 'completeRating']);
 });
 
 Route::post('login', [AuthenticatedSessionController::class, 'store'])->middleware('email');
