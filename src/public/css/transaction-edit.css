@@ -1,0 +1,57 @@
+.transaction-edit-form {
+    background-color: #f9f9f9;
+    padding: 30px;
+    border-radius: 8px;
+}
+
+.transaction-edit-form__buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    justify-content: center;
+}
+
+.btn--edit {
+    width: 180px;
+    background-color: #ff333f;
+    border-radius: 5px;
+    color: #fff;
+    font-weight: bold;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn--edit:hover {
+    opacity: 0.8;
+    transition: 0.2s;
+}
+
+.btn--cancel {
+    width: 180px;
+    background-color: #999;
+    border-radius: 5px;
+    color: #fff;
+    font-weight: bold;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.btn--cancel:hover {
+    opacity: 0.8;
+    transition: 0.2s;
+}
+
+.form__error {
+    color: #ff333f;
+    font-size: 14px;
+    margin-bottom: 8px;
+    margin-top: 5px;
+}
+

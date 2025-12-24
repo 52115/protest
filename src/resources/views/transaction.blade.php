@@ -66,11 +66,11 @@
                     <p class="message__name">{{ $message->user->name }}</p>
                 </div>
                 <div class="message__content-wrapper">
-                    <div class="message__content">
-                        @if($message->img_url)
-                        <img class="message__image" src="{{ \Storage::url($message->img_url) }}" alt="メッセージ画像">
-                        @endif
-                        <p class="message__text">{{ $message->message }}</p>
+                <div class="message__content">
+                    @if($message->img_url)
+                    <img class="message__image" src="{{ \Storage::url($message->img_url) }}" alt="メッセージ画像">
+                    @endif
+                    <p class="message__text">{{ $message->message }}</p>
                     </div>
                     @if($message->user_id == Auth::id())
                     <div class="message__actions">
@@ -122,14 +122,17 @@
         <p class="modal__text">今回の取引相手はどうでしたか？</p>
         <form action="/transaction/{{ $transaction->id }}/rating" method="post" class="rating-form">
             @csrf
-            <div class="rating-stars">
-                @for($i = 1; $i <= 5; $i++)
-                <label class="rating-star">
-                    <input type="radio" name="rating" value="{{ $i }}" {{ old('rating', 3) == $i ? 'checked' : '' }} required>
-                    <span class="star-icon {{ old('rating', 3) >= $i ? 'star-filled' : '' }}">★</span>
-                </label>
-                @endfor
+            <div class="rating-stars-wrapper">
+                <div class="rating-stars">
+                    @for($i = 1; $i <= 5; $i++)
+                    <label class="rating-star">
+                        <input type="radio" name="rating" value="{{ $i }}" {{ old('rating', 3) == $i ? 'checked' : '' }} required>
+                        <span class="star-icon">★</span>
+                    </label>
+                    @endfor
+                </div>
             </div>
+            <div class="rating-form__divider"></div>
             <button type="submit" class="btn btn--rating-submit">送信する</button>
         </form>
     </div>

@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use App\Models\TransactionMessage;
 use App\Models\Item;
 use App\Models\User;
+use App\Models\Rating;
 use App\Http\Requests\TransactionMessageRequest;
 use App\Mail\TransactionCompletedMail;
 use Illuminate\Support\Facades\Mail;
@@ -40,14 +41,26 @@ class TransactionController extends Controller
                     ->where('user_id', '!=', $user->id)
                     ->where('created_at', '>', $lastReadTime)
                     ->count();
+                
+                // 最新メッセージの時刻を取得（ソート用）
+                $latestMessage = $t->messages->sortByDesc('created_at')->first();
+                $latestMessageTime = $latestMessage ? $latestMessage->created_at : $t->created_at;
+                
                 return [
                     'transaction' => $t,
                     'partner' => $partner,
                     'item' => $t->item,
                     'unread_count' => $unreadCount,
+                    '_sort_key' => $latestMessageTime, // ソートキーを保持
                 ];
             })
-            ->values();
+            ->sortByDesc('_sort_key') // 新規メッセージが来た順にソート（降順：最新が上）
+            ->values()
+            ->map(function ($item) {
+                // ソートキーを削除
+                unset($item['_sort_key']);
+                return $item;
+            });
 
         // メッセージを時系列順に取得
         $messages = $transaction->messages()->with('user')->orderBy('created_at', 'asc')->get();
@@ -59,23 +72,21 @@ class TransactionController extends Controller
         $showRatingModal = false;
         if ($transaction->isCompleted()) {
             // 既に評価済みかチェック
-            $alreadyRated = \App\Models\Rating::where('rater_id', Auth::id())
+            $alreadyRated = Rating::where('rater_id', Auth::id())
                 ->where('item_id', $transaction->item_id)
                 ->exists();
             
             if (!$alreadyRated) {
-                // 出品者の場合：購入者が取引完了した後に初めてチャット画面を開いた時
+                // 出品者の場合：購入者が取引完了した後にチャット画面を開いた時
                 if ($transaction->seller_id == Auth::id()) {
-                    // 出品者がまだ評価していない場合、評価モーダルを表示
-                    // 購入者が取引完了した後（completed_atが設定されている）に出品者がチャット画面を開いた時
-                    if (!session()->has('seller_viewed_completed_transaction_' . $transaction_id)) {
-                        // 出品者が取引完了後のチャット画面を初めて開いた時にフラグを設定
-                        session()->put('show_rating_modal_seller_' . $transaction_id, true);
-                        session()->put('seller_viewed_completed_transaction_' . $transaction_id, true);
-                        $showRatingModal = true;
+                    // 出品者が取引完了後のチャット画面を開いた時に評価モーダルを表示
+                    // セッションにフラグがあれば表示、なければ初回表示として設定
+                    if (session()->has('show_rating_modal_seller_' . $transaction_id)) {
+                        $showRatingModal = session('show_rating_modal_seller_' . $transaction_id, false);
                     } else {
-                        // 既に開いたことがある場合は、セッションのフラグを確認
-                    $showRatingModal = session('show_rating_modal_seller_' . $transaction_id, false);
+                        // 初めて開いた場合、評価モーダルを表示
+                        session()->put('show_rating_modal_seller_' . $transaction_id, true);
+                        $showRatingModal = true;
                     }
                 } else {
                     // 購入者の場合：取引完了ボタンを押した後
@@ -237,7 +248,7 @@ class TransactionController extends Controller
         // 評価を保存
         $ratedUserId = $transaction->buyer_id == Auth::id() ? $transaction->seller_id : $transaction->buyer_id;
         
-        \App\Models\Rating::create([
+        Rating::create([
             'rater_id' => Auth::id(),
             'rated_user_id' => $ratedUserId,
             'item_id' => $transaction->item_id,
@@ -258,11 +269,24 @@ class TransactionController extends Controller
                       ->orWhere('seller_id', $userId);
             })
             ->with(['item', 'buyer', 'seller', 'messages'])
-            ->whereNull('completed_at')
             ->get()
+            ->filter(function ($transaction) use ($userId) {
+                // 完了していない取引は常に含める
+                if (!$transaction->isCompleted()) {
+                    return true;
+                }
+                
+                // 完了した取引でも、評価がまだ完了していない場合は含める
+                $alreadyRated = Rating::where('rater_id', $userId)
+                    ->where('item_id', $transaction->item_id)
+                    ->exists();
+                
+                return !$alreadyRated;
+            })
             ->sortByDesc(function ($transaction) {
                 $latestMessage = $transaction->messages->sortByDesc('created_at')->first();
                 return $latestMessage ? $latestMessage->created_at : $transaction->created_at;
-            });
+            })
+            ->values();
     }
 }

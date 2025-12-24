@@ -24,24 +24,24 @@
 }
 
 .sidebar__item {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     position: relative;
 }
 
 .sidebar__link {
-    display: block;
+    display: flex;
+    align-items: center;
     background-color: #f0f0f0;
     padding: 15px;
     text-decoration: none;
     color: #000;
     border-radius: 5px;
     position: relative;
+    gap: 10px;
 }
 
 .sidebar__badge {
-    position: absolute;
-    top: 5px;
-    left: 5px;
+    flex-shrink: 0;
     background-color: #ff333f;
     color: #fff;
     border-radius: 50%;
@@ -55,8 +55,9 @@
 }
 
 .sidebar__item-name {
-    display: block;
+    flex: 1;
     font-size: 14px;
+    word-break: break-word;
 }
 
 .transaction-main {
@@ -400,68 +401,62 @@
 .rating-form {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    width: 100%;
+}
+
+.rating-stars-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 .rating-stars {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 25px;
+    gap: 12px;
+    align-items: center;
 }
 
 .rating-star {
     cursor: pointer;
-    font-size: 35px;
+    font-size: 50px;
     line-height: 1;
+    position: relative;
 }
 
 .rating-star input[type="radio"] {
-    display: none;
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
 }
 
 .star-icon {
     color: #ddd;
-    font-size: 35px;
+    font-size: 50px;
     cursor: pointer;
     transition: color 0.2s;
     display: inline-block;
+    user-select: none;
 }
 
-.rating-star:hover .star-icon,
-.rating-star:hover ~ .rating-star .star-icon {
+/* デフォルト状態（何も選択されていない場合）でも3つの星を黄色にする */
+.rating-stars:not(:has(input:checked)) .rating-star:nth-child(1) .star-icon,
+.rating-stars:not(:has(input:checked)) .rating-star:nth-child(2) .star-icon,
+.rating-stars:not(:has(input:checked)) .rating-star:nth-child(3) .star-icon {
     color: #ffd700;
 }
 
-/* 選択された星とそれより前の星を黄色にする */
-.star-filled {
-    color: #ffd700 !important;
-}
-
-/* 選択された星を黄色にする */
-.rating-star input[value="1"]:checked ~ .star-icon {
-    color: #ffd700;
-}
-
-.rating-star input[value="2"]:checked ~ .star-icon {
-    color: #ffd700;
-}
-
-.rating-star input[value="3"]:checked ~ .star-icon {
-    color: #ffd700;
-}
-
-.rating-star input[value="4"]:checked ~ .star-icon {
-    color: #ffd700;
-}
-
-.rating-star input[value="5"]:checked ~ .star-icon {
-    color: #ffd700;
-}
-
-/* 選択された値より前の星も黄色にする（JavaScriptなしで実装） */
+/* 選択された星とそれより前の星を黄色にする（:has()を使用） */
 .rating-stars:has(input[value="1"]:checked) .rating-star:nth-child(1) .star-icon {
     color: #ffd700;
+}
+
+.rating-stars:has(input[value="1"]:checked) .rating-star:nth-child(1) ~ .rating-star .star-icon {
+    color: #ddd;
 }
 
 .rating-stars:has(input[value="2"]:checked) .rating-star:nth-child(1) .star-icon,
@@ -469,10 +464,18 @@
     color: #ffd700;
 }
 
+.rating-stars:has(input[value="2"]:checked) .rating-star:nth-child(2) ~ .rating-star .star-icon {
+    color: #ddd;
+}
+
 .rating-stars:has(input[value="3"]:checked) .rating-star:nth-child(1) .star-icon,
 .rating-stars:has(input[value="3"]:checked) .rating-star:nth-child(2) .star-icon,
 .rating-stars:has(input[value="3"]:checked) .rating-star:nth-child(3) .star-icon {
     color: #ffd700;
+}
+
+.rating-stars:has(input[value="3"]:checked) .rating-star:nth-child(3) ~ .rating-star .star-icon {
+    color: #ddd;
 }
 
 .rating-stars:has(input[value="4"]:checked) .rating-star:nth-child(1) .star-icon,
@@ -482,18 +485,48 @@
     color: #ffd700;
 }
 
-.rating-stars:has(input[value="5"]:checked) .rating-star:nth-child(1) .star-icon,
-.rating-stars:has(input[value="5"]:checked) .rating-star:nth-child(2) .star-icon,
-.rating-stars:has(input[value="5"]:checked) .rating-star:nth-child(3) .star-icon,
-.rating-stars:has(input[value="5"]:checked) .rating-star:nth-child(4) .star-icon,
-.rating-stars:has(input[value="5"]:checked) .rating-star:nth-child(5) .star-icon {
+.rating-stars:has(input[value="4"]:checked) .rating-star:nth-child(4) ~ .rating-star .star-icon {
+    color: #ddd;
+}
+
+.rating-stars:has(input[value="5"]:checked) .rating-star .star-icon {
     color: #ffd700;
 }
 
-/* :has()がサポートされていないブラウザ用のフォールバック */
+/* ホバー時のスタイル - ホバーした星とそれより前の星を黄色にする */
+.rating-stars:hover .rating-star .star-icon {
+    color: #ffd700;
+}
+
+.rating-star:hover ~ .rating-star .star-icon {
+    color: #ddd;
+}
+
+/* 選択されている状態でのホバー - ホバーが優先される */
+.rating-stars:has(input:checked):hover .rating-star .star-icon {
+    color: #ffd700;
+}
+
+.rating-stars:has(input:checked):hover .rating-star:hover ~ .rating-star .star-icon {
+    color: #ddd;
+}
+
+/* 境界線 */
+.rating-form__divider {
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
+    width: 100%;
+}
+
+/* :has()がサポートされていないブラウザ用のフォールバック（JavaScriptで補完） */
 @supports not selector(:has(*)) {
     .rating-star input:checked ~ .star-icon {
         color: #ffd700;
+    }
+    
+    .rating-star input:checked ~ .star-icon ~ .star-icon,
+    .rating-star:has(input:checked) ~ .rating-star .star-icon {
+        color: #ddd;
     }
 }
 
@@ -509,6 +542,7 @@
     margin: 0;
     display: block;
     margin-left: auto;
+    align-self: flex-end;
 }
 
 .btn--rating-submit:hover {

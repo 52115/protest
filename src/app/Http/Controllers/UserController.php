@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Item;
 use App\Models\SoldItem;
 use App\Models\Transaction;
+use App\Models\Rating;
 use App\Http\Requests\ProfileRequest;
 use Illuminate\Support\Facades\Storage;
 
@@ -68,13 +69,26 @@ class UserController extends Controller
             });         
         } elseif ($request->page == 'transaction') {
             // 取引中の商品を取得（新規メッセージ順にソート）
+            // 完了していない取引、または完了したが評価がまだ完了していない取引を含める
             $transactions = Transaction::where(function($query) use ($user) {
                     $query->where('buyer_id', $user->id)
                           ->orWhere('seller_id', $user->id);
                 })
-                ->whereNull('completed_at')
                 ->with(['item', 'buyer', 'seller', 'messages'])
                 ->get()
+                ->filter(function ($transaction) use ($user) {
+                    // 完了していない取引は常に含める
+                    if (!$transaction->isCompleted()) {
+                        return true;
+                    }
+                    
+                    // 完了した取引でも、評価がまだ完了していない場合は含める
+                    $alreadyRated = Rating::where('rater_id', $user->id)
+                        ->where('item_id', $transaction->item_id)
+                        ->exists();
+                    
+                    return !$alreadyRated;
+                })
                 ->map(function ($transaction) use ($user) {
                     $partner = $transaction->buyer_id == $user->id ? $transaction->seller : $transaction->buyer;
                     // 未読メッセージ数をカウント（自分以外のユーザーからの最新メッセージ）
