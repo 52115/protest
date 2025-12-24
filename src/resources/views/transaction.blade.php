@@ -65,11 +65,13 @@
                     @endif
                     <p class="message__name">{{ $message->user->name }}</p>
                 </div>
-                <div class="message__content">
-                    @if($message->img_url)
-                    <img class="message__image" src="{{ \Storage::url($message->img_url) }}" alt="メッセージ画像">
-                    @endif
-                    <p class="message__text">{{ $message->message }}</p>
+                <div class="message__content-wrapper">
+                    <div class="message__content">
+                        @if($message->img_url)
+                        <img class="message__image" src="{{ \Storage::url($message->img_url) }}" alt="メッセージ画像">
+                        @endif
+                        <p class="message__text">{{ $message->message }}</p>
+                    </div>
                     @if($message->user_id == Auth::id())
                     <div class="message__actions">
                         <a href="/transaction/{{ $transaction->id }}/message/{{ $message->id }}/edit" class="message__edit">編集</a>
@@ -88,6 +90,7 @@
         @if(!$transaction->isCompleted())
         <form action="/transaction/{{ $transaction->id }}/message" method="post" class="transaction-form" enctype="multipart/form-data">
             @csrf
+            @if($errors->has('message') || $errors->has('img_url'))
             <div class="form__error">
                 @error('message')
                     <p>{{ $message }}</p>
@@ -96,14 +99,15 @@
                     <p>{{ $message }}</p>
                 @enderror
             </div>
+            @endif
             <div class="transaction-form__input-group">
-                <input type="text" name="message" class="transaction-form__input" placeholder="取引メッセージを記入してください" value="{{ old('message', session('transaction_message_' . $transaction->id, '')) }}">
-                <label class="btn btn--image">
+                <input type="text" name="message" id="transaction_message_input" class="transaction-form__input" placeholder="取引メッセージを記入してください" value="{{ old('message', session('transaction_message_' . $transaction->id, '')) }}">
+                <label class="btn btn--image" for="img_url_{{ $transaction->id }}">
                     画像を追加
-                    <input type="file" name="img_url" class="transaction-form__file" accept="image/jpeg,image/png">
+                    <input type="file" name="img_url" id="img_url_{{ $transaction->id }}" class="transaction-form__file" accept="image/jpeg,image/png">
                 </label>
                 <button type="submit" class="transaction-form__send">
-                    <i class="fa-solid fa-paper-plane"></i>
+                    <i class="fa-regular fa-paper-plane"></i>
                 </button>
             </div>
         </form>
@@ -130,6 +134,32 @@
         </form>
     </div>
 </div>
+@endif
+
+@if(!$transaction->isCompleted())
+<script>
+(function() {
+    const messageInput = document.getElementById('transaction_message_input');
+    if (messageInput) {
+        messageInput.addEventListener('blur', function() {
+            const message = this.value;
+            const transactionId = {{ $transaction->id }};
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            
+            fetch('/transaction/' + transactionId + '/message/save-draft', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token
+                },
+                body: JSON.stringify({
+                    message: message
+                })
+            });
+        });
+    }
+})();
+</script>
 @endif
 
 @endsection

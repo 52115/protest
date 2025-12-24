@@ -43,6 +43,7 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::post('/mypage/profile', [UserController::class, 'updateProfile']);
     Route::get('/transaction/{transaction_id}', [TransactionController::class, 'show']);
     Route::post('/transaction/{transaction_id}/message', [TransactionController::class, 'store']);
+    Route::post('/transaction/{transaction_id}/message/save-draft', [TransactionController::class, 'saveDraft']);
     Route::get('/transaction/{transaction_id}/message/{message_id}/edit', [TransactionController::class, 'edit']);
     Route::post('/transaction/{transaction_id}/message/{message_id}/update', [TransactionController::class, 'update']);
     Route::delete('/transaction/{transaction_id}/message/{message_id}', [TransactionController::class, 'destroy']);

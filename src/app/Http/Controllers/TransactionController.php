@@ -75,7 +75,7 @@ class TransactionController extends Controller
                         $showRatingModal = true;
                     } else {
                         // 既に開いたことがある場合は、セッションのフラグを確認
-                        $showRatingModal = session('show_rating_modal_seller_' . $transaction_id, false);
+                    $showRatingModal = session('show_rating_modal_seller_' . $transaction_id, false);
                     }
                 } else {
                     // 購入者の場合：取引完了ボタンを押した後
@@ -97,9 +97,10 @@ class TransactionController extends Controller
         }
 
         // バリデーションエラー時は自動的にリダイレクトされる
-        // バリデーション成功後、入力値をセッションに保存（他の画面遷移時の保持用）
-        if ($request->filled('message')) {
-            session()->put('transaction_message_' . $transaction_id, $request->message);
+        // 入力値をセッションに保存（他の画面遷移時の保持用）
+        // prepareForValidation()で保存されるが、バリデーション成功時はここでも保存
+        if ($request->has('message') && $request->filled('message')) {
+            session()->put('transaction_message_' . $transaction_id, $request->input('message'));
         }
 
         $img_url = null;
@@ -118,6 +119,23 @@ class TransactionController extends Controller
         session()->forget('transaction_message_' . $transaction_id);
 
         return redirect('/transaction/' . $transaction_id)->with('flashSuccess', 'メッセージを送信しました！');
+    }
+
+    public function saveDraft($transaction_id, Request $request)
+    {
+        $transaction = Transaction::findOrFail($transaction_id);
+        
+        // 取引に関わっているユーザーかチェック
+        if ($transaction->buyer_id != Auth::id() && $transaction->seller_id != Auth::id()) {
+            abort(403);
+        }
+
+        // 入力値をセッションに保存（他の画面遷移時の保持用）
+        if ($request->has('message')) {
+            session()->put('transaction_message_' . $transaction_id, $request->input('message'));
+        }
+
+        return response()->json(['success' => true]);
     }
 
     public function edit($transaction_id, $message_id)
