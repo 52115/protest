@@ -20,14 +20,14 @@
                     <img src="{{ \Storage::url($item->img_url) }}" alt="">
                 </div>
                 <div class="item__info">
-                    <h3 class="item__name">{{$item->name}}</h3>
+                    <h1 class="item__name">{{$item->name}}</h1>
                     <p class="item__price">¥ {{number_format($item->price)}}</p>
                 </div>
             </div>
             <div class="purchases">
                 <div class="purchase">
                     <div class="purchase__flex">
-                        <h3 class="purchase__title">支払い方法</h3>
+                        <h2 class="purchase__title">支払い方法</h2>
                     </div>
                     <select class="purchase__value" id="payment" name="payment_method">
                         <option value="konbini">コンビニ払い</option>
@@ -36,7 +36,7 @@
                 </div>
                 <div class="purchase">
                     <div class="purchase__flex">
-                        <h3 class="purchase__title">配送先</h3>
+                        <h2 class="purchase__title">配送先</h2>
                         <button type="button" id="destination__update">変更する</button>
                     </div>
                     <div class="purchase__value">

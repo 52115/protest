@@ -14,3 +14,22 @@
     border-radius: 50%;
     background-color: #d9d9d9;
 }
+
+@media (min-width: 768px) and (max-width: 850px) {
+    .user {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .user__img {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+}
+
+@media (min-width: 1400px) and (max-width: 1540px) {
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+}

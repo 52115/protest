@@ -11,7 +11,7 @@
 @include('components.header')
 <div class="transaction-container">
     <div class="transaction-sidebar">
-        <h3 class="sidebar__title">その他の取引</h3>
+        <h2 class="sidebar__title">その他の取引</h2>
         <ul class="sidebar__list">
             @foreach($otherTransactions as $other)
             <li class="sidebar__item">
@@ -34,7 +34,7 @@
                 @else
                 <img class="transaction-header__avatar" src="{{ asset('img/icon.png') }}" alt="">
                 @endif
-                <h2 class="transaction-header__title">「{{ $partner->name }}」さんとの取引画面</h2>
+                <h1 class="transaction-header__title">「{{ $partner->name }}」さんとの取引画面</h1>
             </div>
             @if(!$transaction->isCompleted() && $transaction->buyer_id == Auth::id())
             <form action="/transaction/{{ $transaction->id }}/complete" method="post" class="transaction-header__complete">
@@ -49,7 +49,7 @@
                 <img src="{{ \Storage::url($transaction->item->img_url) }}" alt="商品画像">
             </div>
             <div class="transaction-product__info">
-                <h3 class="transaction-product__name">{{ $transaction->item->name }}</h3>
+                <h2 class="transaction-product__name">{{ $transaction->item->name }}</h2>
                 <p class="transaction-product__price">¥ {{ number_format($transaction->item->price) }}</p>
             </div>
         </div>
@@ -118,7 +118,7 @@
 @if(isset($showRatingModal) && $showRatingModal)
 <div class="modal" id="ratingModal">
     <div class="modal__content modal__content--rating">
-        <h3 class="modal__title">取引が完了しました。</h3>
+        <h2 class="modal__title">取引が完了しました。</h2>
         <p class="modal__text">今回の取引相手はどうでしたか？</p>
         <form action="/transaction/{{ $transaction->id }}/rating" method="post" class="rating-form">
             @csrf

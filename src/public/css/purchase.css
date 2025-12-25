@@ -93,8 +93,17 @@
 }
 
 @media (min-width: 768px) and (max-width: 850px) {
+    .buy {
+        flex-direction: column;
+    }
+
+    .buy__left {
+        width: 100%;
+    }
+
     .buy__right {
-        width: 45%;
+        width: 100%;
+        margin-top: 30px;
     }
 
     .buy__info table {
@@ -105,9 +114,32 @@
         width: 100%;
     }
 
-    .table__header ,
-    .table__data{
+    .table__header,
+    .table__data {
         padding: unset !important;
         vertical-align: middle;
+    }
+
+    .item {
+        flex-direction: column;
+    }
+
+    .item__img {
+        width: 100%;
+        max-width: 300px;
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+}
+
+@media (min-width: 1400px) and (max-width: 1540px) {
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .buy {
+        max-width: 1200px;
+        margin: 0 auto;
     }
 }

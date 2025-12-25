@@ -182,4 +182,13 @@ header{
     .header__logo {
         width: 25vw;
     }
+
+    .btn {
+        width: 100%;
+    }
+
+    .center {
+        width: 90%;
+        max-width: 680px;
+    }
 }

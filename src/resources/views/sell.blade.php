@@ -18,7 +18,7 @@
     <div class="select_image--btn">
         <label class="btn2">
             画像を選択する
-            <input id="target" name="img_url" class="btn2--input" type="file" name="test" accept="image/png, image/jpeg">
+            <input id="target" name="img_url" class="btn2--input" type="file" accept="image/png, image/jpeg">
         </label>
     </div>
     <div class="form__error">

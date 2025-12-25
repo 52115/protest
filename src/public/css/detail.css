@@ -198,4 +198,21 @@
     .comment__form-textarea {
         width: 100%;
     }
+
+    .comment__content {
+        width: 100%;
+        max-width: 450px;
+    }
+}
+
+@media (min-width: 1400px) and (max-width: 1540px) {
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .item {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
 }

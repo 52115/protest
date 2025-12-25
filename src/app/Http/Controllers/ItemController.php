@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Storage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ItemRequest;
 use App\Models\Item;
@@ -41,9 +41,9 @@ class ItemController extends Controller
     }
     
     public function search(Request $request){
-        $search_word = $request->search_item;
+        $searchWord = $request->search_item;
         $query = Item::query();
-        $query = Item::scopeItem($query, $search_word);
+        $query = Item::scopeItem($query, $searchWord);
         
         $items = $query->get();
         return view('index', compact('items'));
@@ -60,7 +60,6 @@ class ItemController extends Controller
         $img = $request->file('img_url');
         
         try {
-            //code...
             $img_url = Storage::disk('local')->put('public/img', $img);
         } catch (\Throwable $th) {
             throw $th;

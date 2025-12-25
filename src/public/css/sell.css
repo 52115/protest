@@ -60,3 +60,21 @@
     height: 125px;
     overflow-y: scroll;
 }
+
+@media (min-width: 768px) and (max-width: 850px) {
+    .sell__categories {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .sell__category {
+        margin: 10px 5px;
+    }
+}
+
+@media (min-width: 1400px) and (max-width: 1540px) {
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+}

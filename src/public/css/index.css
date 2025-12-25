@@ -72,4 +72,15 @@
         width: 25vw;
         height: 10em;
     }
+
+    .border__list li {
+        padding: 20px 30px;
+    }
+}
+
+@media (min-width: 1400px) and (max-width: 1540px) {
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
 }

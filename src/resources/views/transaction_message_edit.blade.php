@@ -20,7 +20,7 @@
             @error('message')
                 <div class="form__error">{{ $message }}</div>
             @enderror
-            <textarea name="message" id="message" class="input" rows="5" required>{{ old('message', $message->message) }}</textarea>
+            <textarea name="message" id="message" class="input" rows="5">{{ old('message', $message->message) }}</textarea>
 
             @if($message->img_url)
             <div class="current-image">

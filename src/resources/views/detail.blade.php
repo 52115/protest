@@ -21,7 +21,7 @@
         </div>
         @endif
         <div class="item__info" id="scroll__item__info">
-            <h2 class="item__name">{{$item->name}}</h2>
+            <h1 class="item__name">{{$item->name}}</h1>
             <p class="item__price">¥ {{number_format($item->price)}}</p>
             <div class="item__form">
                 <form action="{{ $item->liked() ? '/item/unlike/'.$item->id : '/item/like/'.$item->id  }}" method="post" class="item__like" id="like__form">
@@ -41,9 +41,9 @@
             @else
             <a href="/purchase/{{$item->id}}" class="btn item__purchase">購入手続きへ</a>
             @endif
-            <h3 class="item__section">商品説明</h3>
+            <h2 class="item__section">商品説明</h2>
             <p class="item__description">{{$item->description}}</p>
-            <h3 class="item__section">商品の情報</h3>
+            <h2 class="item__section">商品の情報</h2>
             <table class="item__table">
                 <tr>
                     <th>ブランド</th>
@@ -65,7 +65,7 @@
                 </tr>
             </table>
             <div id="comment" class="comment_section">
-                <h3 id="count__title">コメント({{$item->getComments()->count()}})</h3>
+                <h2 id="count__title">コメント({{$item->getComments()->count()}})</h2>
                 <div class="comments" id="comments__list">
                     @foreach ($item->getComments() as $comment)
                     <div class="comment">
