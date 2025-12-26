@@ -88,7 +88,6 @@
 </form>
 <script>
 const target = document.getElementById('target');
-const e = document.getElementById('appload');
 target.addEventListener('change', function (e) {
     const file = e.target.files[0]
     const reader = new FileReader();
